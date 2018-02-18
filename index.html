@@ -4,39 +4,31 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
-    <meta name="theme-color" content="darkgreen" /><!--For Android Chrome-->
+    <meta name="theme-color" content="darkgreen" />
+    <!--For Android Chrome-->
     <link rel="icon" href="img/icon-32x32.png" />
     <link rel="apple-touch-icon" href="img/icon-192x192.png" />
     <link rel="manifest" href="manifest.json" />
     <link rel="stylesheet" href="css/light.css" type="text/css" />
     <title>MN2 Core</title>
     <script src="js/main.js"></script>
-    <script>document.addEventListener("DOMContentLoaded", init);</script>
+    <script>
+        document.addEventListener("DOMContentLoaded", init);
+    </script>
 </head>
 <body>
     <main>
         <div id="main">
-            <div id="exam_list">
+            <div id="menu">
                 <div class="Paragraph">
                     <div class="Title">
                         <h1>MN2 Core</h1>
                     </div>
-                    <p><!--説明--></p>
+                    <p>
+                        <!--説明-->
+                    </p>
                 </div>
-                <div class="Paragraph">
-                    <div class="Title">
-                        <h1>種別1</h1>
-                    </div>
-                    <div id="rulelist">
-                    </div>
-                </div>
-                <div class="Paragraph">
-                    <div class="Title">
-                        <h1>種別2</h1>
-                    </div>
-                    <div id="teclist">
-                    </div>
-                </div>
+                <div id="exam_list"></div>
                 <div class="Paragraph">
                     <div class="Title">
                         <h1>設定</h1>
@@ -44,23 +36,23 @@
                     <input type="button" onclick="resetLog()" value="全実施結果削除" /><br />
                 </div>
             </div>
-        </div>
-        <div class="Paragraph" style="display:none;" id="exam">
-            <div class="Title">
-                <h1 id="question_title">第1問</h1>
+            <div class="Paragraph" style="display:none;" id="exam">
+                <div class="Title">
+                    <h1 id="question_title">第1問</h1>
+                </div>
+                <p id="question_text">Loading...</p>
+                <div id="answer_box">
+                    <input name="answer" type="radio" value="1" accesskey="1">1</input>
+                    <input name="answer" type="radio" value="2" accesskey="2">2</input>
+                    <input name="answer" type="radio" value="3" accesskey="3">3</input>
+                    <input name="answer" type="radio" value="4" accesskey="4">4</input>
+                    <input name="answer" type="submit" value="回答" onclick="return checkAnswer();" />
+                </div>
+                <div id="message_box" style="transition:max-height 0.5s ease;max-height:0px;overflow:hidden;">
+                </div>
             </div>
-            <p id="question_text">Loading...</p>
-            <div id="answer_box">
-                <input name="answer" type="radio" value="1" accesskey="1">1</input>
-                <input name="answer" type="radio" value="2" accesskey="2">2</input>
-                <input name="answer" type="radio" value="3" accesskey="3">3</input>
-                <input name="answer" type="radio" value="4" accesskey="4">4</input>
-                <input name="answer" type="submit" value="回答" onclick="return checkAnswer();" />
-            </div>
-            <div id="message_box" style="transition:max-height 0.5s ease;max-height:0px;overflow:hidden;">
-            </div>
-        </div>
         </div>
     </main>
 </body>
+
 </html>

@@ -60,7 +60,7 @@ function setTecList() {
 }
 
 function showExamlist(b) { /*b:true =>問題リスト表示 false=>問題表示*/
-  document.getElementById("exam_list").style.display = b ? "" : "none";
+  document.getElementById("menu").style.display = b ? "" : "none";
   document.getElementById("exam").style.display = b ? "none" : "";
 }
 
@@ -188,7 +188,7 @@ function endExam() {
   qman.bad = 0;
   qman.no = 1;
   qman.exam_id.charAt(0) == "r" ? setRuleList() : setTecList();//log反映
-  document.getElementById("exam_list").style.display = "";
+  document.getElementById("menu").style.display = "";
   document.getElementById("exam").style.display = "none";
 }
 
