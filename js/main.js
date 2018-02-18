@@ -43,14 +43,21 @@ class ExaminationManager {
 
     getConfigByPrefix(p) {
         let cnt = 0;
-        let len = this.config.length
-        while (cnt < len && this.config[cnt].prefix != p) cnt++;
-        return (cnt == len) ? null : this.config[cnt];
+        let len = this.config.list.length
+        while (cnt < len && this.list.config[cnt].prefix != p) cnt++;
+        return (cnt == len) ? null : this.config.list[cnt];
     }
 
     getExamConfig(index) {
-        if (index >= this.config.length) return null;
-        return this.config[index]; //Object.assign(this.config[index]);
+        if (index >= this.config.list.length) return null;
+        return this.config.list[index]; //Object.assign(this.config[index]);
+    }
+
+    get system_info() {
+        return {
+            name: this.config.name,
+            description: this.config.description
+        };
     }
 
     get now_exam_id() {
@@ -98,6 +105,7 @@ function init() {
     fetch("config.json").then(response => {
         response.json().then(json => {
             exam_manager.config_json = json;
+            setSystemInfo();
             setExamList();
         });
     }).catch(e => {
@@ -127,6 +135,13 @@ function init() {
             exam_manager.resetStatus();
         }
     }
+}
+
+function setSystemInfo() {
+    let info = exam_manager.system_info;
+    document.getElementById("system_title").innerHTML = info.name;
+    document.getElementById("system_description").innerHTML = info.description;
+    document.title = info.name;
 }
 
 function setExamList() {
