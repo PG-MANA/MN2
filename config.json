@@ -1,0 +1,11 @@
+[{
+    "name": "種別1",
+    "prefix": "a",
+    "num": "10",
+    "passing_mark": "10"
+}, {
+    "name": "種別2",
+    "prefix": "b",
+    "num": "10",
+    "passing_mark": "12"
+}]
