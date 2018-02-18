@@ -6,7 +6,7 @@
 class ExaminationManager {
     /*セッターゲッターはスネークケース、関数はキャメルケースという*/
     constructor() {
-        resetStatus();
+        this.resetStatus();
         this.json = {};
     }
 
@@ -154,7 +154,7 @@ function setExamList() {
         exam_dom.className = "Paragraph";
         exam_dom.innerHTML = "<div class=\"Title\"><h1>" + config.name + "</h1></div>";
         for (let cnt = 1; cnt <= config.num; cnt++) {
-            exam_dom.innerHTML += "<p><a id=\"" + config.prefix + cnt + "\" href=\"?t=" + config.prefix + cnt + "\" onclick=\"return prepareExam(this);\">" + config.name + cnt + "</a>" + (log[config.name + cnt] !== undefined ? (":正解数:" +
+            exam_dom.innerHTML += "<p><a id=\"" + config.prefix + cnt + "\" href=\"?t=" + config.prefix + cnt + "\" onclick=\"return prepareExam(this);\">" + config.name + "-" + cnt + "</a>" + (log[config.name + cnt] !== undefined ? (":正解数:" +
                 log[config.name + cnt].good + (log[config.name + cnt].good >= config.passing_mark ? "(合格)" : "(不合格)")) : "") + "</p>";
         }
         dom.appendChild(exam_dom);
