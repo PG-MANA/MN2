@@ -15,7 +15,7 @@ ECMA Script 2015準拠のJavaScriptに対応したブラウザ(主にFirefox Chr
 ## ライセンス
 See LICENSE.md
 ## 使用方法
-製作中...
+See CONFIG.md
 ## リンク
 ### アマチュア無線技士3級問題集
 これの元ととなってるもの(いずれこのプロジェクトのfork版となる)  
