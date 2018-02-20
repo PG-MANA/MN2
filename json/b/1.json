@@ -1,0 +1,14 @@
+[{
+    "text": "テスト問題bの1です。選択肢シャッフル機能を搭載してます。ここでは「Hello」が正解です。",
+    "select": ["Hello", "Good Morning", "Good Night", "Hey"]
+}, {
+    "text": "問題はJSONで記述されています。\"text\"には問題を\"select\"には選択肢の配列を格納します。slect[0]、つまり\"select\"の一番最初の選択肢が正解になるようにします。",
+    "select": ["select[0]", "select[1]", "select[2]", "select[3]"]
+}, {
+    "text": "\"img\"オブジェクトに配列として、ファイル名を記述すると、img/(問題のprefix)/(ファイル名)を読み込み表示します。",
+    "img": ["test.png"],
+    "select": ["これが正解です", "ダミー1", "ダミー2", "ダミー3"]
+}, {
+    "text": "json/config.jsonの\"pass_mark\"に合格点を入力すると合否判定が可能です。",
+    "select": ["これが正解です", "ダミー1", "ダミー2", "ダミー3"]
+}]

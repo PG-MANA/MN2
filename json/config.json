@@ -1,0 +1,15 @@
+{
+    "name": "MN2 Core System",
+    "description": "ローカル側ですべて処理する多選択肢方式試験練習システムです。<br />こちらではManifest.jsonとは違い、長い説明を入れることができます。このテキストはDOMテキストとして解釈され説明文として表示されます。このテキストはサンプルです。このJSONの記述方法はREADME.mdをご覧ください。<a href=\"https://github.com/PG-MANA/MN2\">このプロジェクトのGitHubページ</a>",
+    "list": [{
+        "name": "テスト1",
+        "prefix": "a",
+        "num": 1,
+        "passing_mark": 2
+    }, {
+        "name": "テスト2",
+        "prefix": "b",
+        "num": 2,
+        "passing_mark": 3
+    }]
+}

@@ -12,11 +12,12 @@ class ExaminationManager {
 
     resetStatus() {
         this.status = {
-            no: 1,
+            no: 0,
             correct: 0,
             good: 0,
             bad: 0,
-            exam_id: ""
+            exam_no: 0,
+            exam_prefix: ""
         };
     }
 
@@ -44,7 +45,7 @@ class ExaminationManager {
     getConfigByPrefix(p) {
         let cnt = 0;
         let len = this.config.list.length
-        while (cnt < len && this.list.config[cnt].prefix != p) cnt++;
+        while (cnt < len && this.config.list[cnt].prefix != p) cnt++;
         return (cnt == len) ? null : this.config.list[cnt];
     }
 
@@ -60,19 +61,31 @@ class ExaminationManager {
         };
     }
 
-    get now_exam_id() {
-        return this.status.exam_id;
-    }
-    set now_exam_id(id) {
-        this.status.exam_id = id;
+    get now_exam_no() {
+        return this.status.exam_no;
     }
 
+    set now_exam_no(n) {
+        this.status.exam_no = n;
+    }
+
+    get now_exam_prefix() {
+        return this.status.exam_prefix;
+    }
+
+    set now_exam_prefix(p) {
+        this.status.exam_prefix = p;
+    }
     set question_json(json) {
         this.json = json;
     }
 
     get next_question() {
         return (this.json.length > this.status.no) ? this.json[this.status.no++] : null;
+    }
+
+    get question_no() {
+        return this.status.no;
     }
 
     get correct() {
@@ -96,13 +109,13 @@ class ExaminationManager {
     }
 }
 
-var log; /*initにおいて初期化*/
-var exam_manager = new ExaminationManager();
+let log; /*initにおいて初期化*/
+let exam_manager = new ExaminationManager();
 
 /*初期化*/
 function init() {
     log = localStorage.log !== undefined ? JSON.parse(localStorage.log) : {};
-    fetch("config.json").then(response => {
+    fetch("json/config.json").then(response => {
         response.json().then(json => {
             exam_manager.config_json = json;
             setSystemInfo();
@@ -121,20 +134,36 @@ function init() {
     }
     //オプション処理
     //URL解析
-    var type_query = location.search.match(/\?(?:[^&]*&)*t=([^&]+)/i);
-    if (type_query) prepareExam({
-        id: type_query[1]
+    let query = getQuery();
+    if (query["p"] && query["n"]) prepareExam({
+        dataset: {
+            prefix: query["p"],
+            no: query["n"]
+        }
     });
 
-    if (exam_manager.resetStatus()) {
+    if (exam_manager.restoreStatus()) {
         if (confirm("試験中にブラウザを閉じました。試験を再開しますか。")) {
             prepareExam({
-                id: exam_manager.now_exam_id
+                dataset: {
+                    prefix: exam_manager.now_exam_prefix,
+                    no: exam_manager.now_exam_no
+                }
             });
         } else {
             exam_manager.resetStatus();
         }
     }
+}
+
+function getQuery() {
+    let list = location.search.substring(1).split("&");
+    let result = new Array();
+    for (let cnt = list.length - 1; cnt >= 0; cnt--) {
+        let temp = list[cnt].match(/^([^=]+)=(.+)$/);
+        if (temp !== null) result[temp[1]] = temp[2];
+    }
+    return result;
 }
 
 function setSystemInfo() {
@@ -145,7 +174,7 @@ function setSystemInfo() {
 }
 
 function setExamList() {
-    var dom = document.getElementById("exam_list");
+    let dom = document.getElementById("exam_list");
     dom.innerHTML = "";
     for (let exam_cnt = 0;; exam_cnt++) {
         let config = exam_manager.getExamConfig(exam_cnt);
@@ -154,8 +183,8 @@ function setExamList() {
         exam_dom.className = "Paragraph";
         exam_dom.innerHTML = "<div class=\"Title\"><h1>" + config.name + "</h1></div>";
         for (let cnt = 1; cnt <= config.num; cnt++) {
-            exam_dom.innerHTML += "<p><a id=\"" + config.prefix + cnt + "\" href=\"?t=" + config.prefix + cnt + "\" onclick=\"return prepareExam(this);\">" + config.name + "-" + cnt + "</a>" + (log[config.name + cnt] !== undefined ? (":正解数:" +
-                log[config.name + cnt].good + (log[config.name + cnt].good >= config.passing_mark ? "(合格)" : "(不合格)")) : "") + "</p>";
+            exam_dom.innerHTML += "<p><a data-prefix=\"" + config.prefix + "\" data-no=\"" + cnt + "\" href=\"?p=" + config.prefix + "&n=" + cnt + "\" onclick=\"return prepareExam(this);\">" + config.name + "-" + cnt + "</a>" + (log[config.prefix] !== undefined && log[config.prefix][cnt] !== undefined ? (":正解数:" +
+                log[config.prefix][cnt].good + (log[config.prefix][cnt].good >= config.passing_mark ? "(合格)" : "(不合格)")) : "") + "</p>";
         }
         dom.appendChild(exam_dom);
     }
@@ -169,12 +198,13 @@ function showExamlist(b) { /*b:true =>問題リスト表示 false=>問題表示*
 
 /*問題表示系統*/
 function prepareExam(t) {
-    if (t.id.includes("..")) {
+    if (t.dataset.prefix.includes("..") || t.dataset.no.includes("..")) {
         alert("XSS攻撃の疑いのあるアクセスを検知しました。読み込みを中止します。\nもしあなたが、リンクをクリックしてこのサイトに訪れた場合、リンク作成者が悪意のある人の可能性が有ります。");
         return;
     }
-    var json_url = "json/" + t.id + ".json";
-    exam_manager.now_exam_id = t.id;
+    let json_url = "json/" + t.dataset.prefix + "/" + t.dataset.no + ".json";
+    exam_manager.now_exam_prefix = t.dataset.prefix;
+    exam_manager.now_exam_no = t.dataset.no;
     fetch(json_url).then(response => {
         if (!response.ok) throw response.statusText;
         else response.json().then(json => loadExam(json));
@@ -189,22 +219,22 @@ function loadExam(json) {
 }
 
 function showQuestion() {
-    var json = exam_manager.next_question;
-    var text_box = document.getElementById("question_text");
+    let json = exam_manager.next_question;
+    let text_box = document.getElementById("question_text");
     if (json === null) return showResult();
     closeMessage(true);
-    document.getElementById("question_title").innerHTML = "第" + qman.no + "問";
+    document.getElementById("question_title").innerHTML = "第" + exam_manager.question_no + "問";
     text_box.innerHTML = "<p>" + json.text.replace(/\n/g, "<br />") + "</p><br />";
 
     if (json.img) {
-        for (var len = json.img.length, cnt = 0; cnt < len; cnt++) {
-            text_box.innerHTML += "<img src=\"img/" + json.img[cnt] + "\" /><br />";
+        for (let len = json.img.length, cnt = 0; cnt < len; cnt++) {
+            text_box.innerHTML += "<img src=\"img/" + exam_manager.now_exam_prefix + "/" + json.img[cnt] + "\" /><br />";
         }
     }
     //こっから昔書いたHSPコード丸パクリ
     Math.round();
-    for (var qlen = json.select.length, rndc = new Array(qlen), cnt = 0; qlen > cnt;) { //4つ以上対応可みたいな作りだが実際4固定 TODO:選択肢伸縮
-        var rnum = Math.floor(Math.random() * qlen);
+    for (let qlen = json.select.length, rndc = new Array(qlen), cnt = 0; qlen > cnt;) { //4つ以上対応可みたいな作りだが実際4固定 TODO:選択肢伸縮
+        let rnum = Math.floor(Math.random() * qlen);
         if (rndc[rnum] === true) continue;
         if (rnum == 0) exam_manager.correct = cnt;
         rndc[rnum] = true;
@@ -214,9 +244,9 @@ function showQuestion() {
 }
 
 function checkAnswer() {
-    var radio_buttons = document.getElementsByName("answer");
-    var selected = 0;
-    for (var cnt = 0, len = radio_buttons.length; cnt < len; cnt++) {
+    let radio_buttons = document.getElementsByName("answer");
+    let selected = 0;
+    for (let cnt = 0, len = radio_buttons.length; cnt < len; cnt++) {
         if (radio_buttons[cnt].checked) {
             selected = radio_buttons[cnt].value;
             radio_buttons[cnt].checked = false;
@@ -224,14 +254,14 @@ function checkAnswer() {
         }
     }
 
-    var mes = "";
-    var mcolor = "";
+    let mes = "";
+    let mcolor = "";
     if (selected == exam_manager.correct + 1) { /*無選択の場合対策*/
         mes = "<p>正解です。</p>";
         color = "palegreen";
         exam_manager.addRecord(true);
     } else {
-        mes = "<p>不正解です。正しい答えは" + (qman.correct + 1) + "番です。</p>";
+        mes = "<p>不正解です。正しい答えは" + (exam_manager.correct + 1) + "番です。</p>";
         color = "hotpink";
         exam_manager.addRecord(false);
     }
@@ -245,10 +275,9 @@ function showResult() {
     document.getElementById("answer_box").style.display = "none";
     exam_manager.deleteSaveData()
     let result = exam_manager.record;
-    var mes = "<p><strong>結果発表</strong></p><p>正答数:<strong>" + result.good + "</strong></p><p>誤答数:<strong>" + result.bad + "</strong></p>";
-    var color = "";
-    // TODO: prefix複数文字対応
-    let current_config = exam_manager.getConfigByPrefix(exam_manager.now_exam_id.charAt(0));
+    let mes = "<p><strong>結果発表</strong></p><p>正答数:<strong>" + result.good + "</strong></p><p>誤答数:<strong>" + result.bad + "</strong></p>";
+    let color = "";
+    let current_config = exam_manager.getConfigByPrefix(exam_manager.now_exam_prefix);
     if (current_config !== null) {
         if (result.good >= current_config.passing_mark) {
             mes += "<p><strong>合格</strong>です。おめでとうございます。🎉👏</p>";
@@ -263,7 +292,8 @@ function showResult() {
         mes += "<p>合否判定ができませんでした。</p>";
         color = "grey";
     }
-    log[exam_manager.now_exam_id] = result;
+    if (log[exam_manager.now_exam_prefix] === undefined) log[exam_manager.now_exam_prefix] = {};
+    log[exam_manager.now_exam_prefix][exam_manager.now_exam_no] = result;
     localStorage.log = JSON.stringify(log);
     mes += "<input type=\"button\" value=\"終了\" onclick=\"endExam()\" />";
     showMessage(mes, color);
@@ -278,7 +308,7 @@ function endExam() {
 
 /*メッセージ表示系統*/
 function showMessage(text, color) {
-    var dom = document.getElementById("message_box");
+    let dom = document.getElementById("message_box");
     if (text) dom.innerHTML = text;
     if (color) dom.style.backgroundColor = color;
     dom.style.maxHeight = (dom.scrollHeight ? dom.scrollHeight : 100) + "px"; /*表示されないと先行けないので救済措置*/
@@ -300,8 +330,8 @@ function resetLog() {
 // TODO: 再実装
 function fetchAllJson() {
     /*全てのJSONにfetchかければService Workerがキャッシュしてくれるだろうという乱暴な考え*/
-    var links = document.links;
-    for (var len = links.length, cnt = 0; cnt < len; cnt++) {
+    let links = document.links;
+    for (let len = links.length, cnt = 0; cnt < len; cnt++) {
         if (links[cnt].id !== undefined) fetch("json/" + links[cnt].id + ".json");
     }
 }
