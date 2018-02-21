@@ -13,7 +13,7 @@
 ECMA Script 2015準拠のJavaScriptに対応したブラウザ(主にFirefox Chrome)
 **Internet Explorerは非対応**
 ## ライセンス
-See LICENSE.md
+See LICENSE
 ## 使用方法
 See CONFIG.md
 ## リンク
