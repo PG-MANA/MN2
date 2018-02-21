@@ -1,19 +1,19 @@
 {
-    "short_name":  "MN2 Core",
-    "name":  "MN2 Core System",
+    "short_name": "MN2 Core",
+    "name": "MN2 Core System",
     "description": "ローカル側ですべて処理する多選択肢方式試験練習システムです。",
-    "icons": [
-        {
-            "src": "img/icon-32x32.png",
+    "icons": [{
+            "src": "../img/icon-32x32.png",
             "type": "image/png",
             "sizes": "32x32"
         },
         {
-            "src": "img/icon-192x192.png",
+            "src": "../img/icon-192x192.png",
             "type": "image/png",
             "sizes": "192x192"
-    }],
-    "start_url": "index.html",
+        }
+    ],
+    "start_url": "../index.html",
     "background_color": "darkgreen",
     "theme_color": "darkgreen",
     "display": "standalone"
