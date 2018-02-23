@@ -115,7 +115,7 @@ let exam_manager = new ExaminationManager();
 /*初期化*/
 function init() {
     log = localStorage.log !== undefined ? JSON.parse(localStorage.log) : {};
-    fetch("json/config.json").then(response => {
+    fetch("config/json/config.json").then(response => {
         response.json().then(json => {
             exam_manager.config_json = json;
             setSystemInfo();
@@ -202,7 +202,7 @@ function prepareExam(t) {
         alert("XSS攻撃の疑いのあるアクセスを検知しました。読み込みを中止します。\nもしあなたが、リンクをクリックしてこのサイトに訪れた場合、リンク作成者が悪意のある人の可能性が有ります。");
         return;
     }
-    let json_url = "json/" + t.dataset.prefix + "/" + t.dataset.no + ".json";
+    let json_url = "config/json/" + t.dataset.prefix + "/" + t.dataset.no + ".json";
     exam_manager.now_exam_prefix = t.dataset.prefix;
     exam_manager.now_exam_no = t.dataset.no;
     fetch(json_url).then(response => {
@@ -228,7 +228,7 @@ function showQuestion() {
 
     if (json.img) {
         for (let len = json.img.length, cnt = 0; cnt < len; cnt++) {
-            text_box.innerHTML += "<img src=\"img/" + exam_manager.now_exam_prefix + "/" + json.img[cnt] + "\" /><br />";
+            text_box.innerHTML += "<img src=\"config/img/" + exam_manager.now_exam_prefix + "/" + json.img[cnt] + "\" /><br />";
         }
     }
     //こっから昔書いたHSPコード丸パクリ
@@ -332,6 +332,6 @@ function fetchAllJson() {
     /*全てのJSONにfetchかければService Workerがキャッシュしてくれるだろうという乱暴な考え*/
     let links = document.links;
     for (let len = links.length, cnt = 0; cnt < len; cnt++) {
-        if (links[cnt].id !== undefined) fetch("json/" + links[cnt].id + ".json");
+        if (links[cnt].id !== undefined) fetch("config/json/" + links[cnt].id + ".json");
     }
 }

@@ -12,7 +12,7 @@ class CacheSystem {
     init() {
         this.disable_cache = true;
         caches.open(this.NAME).then((cache) => {
-            return cache.addAll(["index.html", "js/main.js", "json/config.json", "img/icon-32x32.png", "img/icon-192x192.png", "css/light.css"]);
+            return cache.addAll(["index.html", "js/main.js", "config/json/config.json", "config/img/icon-32x32.png", "config/img/icon-192x192.png", "css/light.css"]);
         }).then(() => {
             this.disable_cache = false;
         }).catch((event) => {
