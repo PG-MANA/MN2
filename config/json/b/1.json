@@ -9,6 +9,6 @@
     "img": ["test.png"],
     "select": ["これが正解です", "ダミー1", "ダミー2", "ダミー3"]
 }, {
-    "text": "json/config.jsonの\"pass_mark\"に合格点を入力すると合否判定が可能です。",
+    "text": "config/json/config.jsonの\"pass_mark\"に合格点を入力すると合否判定が可能です。",
     "select": ["これが正解です", "ダミー1", "ダミー2", "ダミー3"]
 }]
