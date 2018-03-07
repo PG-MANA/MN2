@@ -111,11 +111,13 @@ class ExaminationManager {
 
 let log; /*initにおいて初期化*/
 let exam_manager = new ExaminationManager();
+const json_location = "config/json/";
+const img_location = "config/img/";
 
 /*初期化*/
 function init() {
     log = localStorage.log !== undefined ? JSON.parse(localStorage.log) : {};
-    fetch("json/config.json").then(response => {
+    fetch(json_location + "config.json").then(response => {
         response.json().then(json => {
             exam_manager.config_json = json;
             setSystemInfo();
@@ -202,7 +204,7 @@ function prepareExam(t) {
         alert("XSS攻撃の疑いのあるアクセスを検知しました。読み込みを中止します。\nもしあなたが、リンクをクリックしてこのサイトに訪れた場合、リンク作成者が悪意のある人の可能性が有ります。");
         return;
     }
-    let json_url = "json/" + t.dataset.prefix + "/" + t.dataset.no + ".json";
+    let json_url = json_location + t.dataset.prefix + "/" + t.dataset.no + ".json";
     exam_manager.now_exam_prefix = t.dataset.prefix;
     exam_manager.now_exam_no = t.dataset.no;
     fetch(json_url).then(response => {
@@ -228,17 +230,20 @@ function showQuestion() {
 
     if (json.img) {
         for (let len = json.img.length, cnt = 0; cnt < len; cnt++) {
-            text_box.innerHTML += "<img src=\"img/" + exam_manager.now_exam_prefix + "/" + json.img[cnt] + "\" /><br />";
+            text_box.innerHTML += "<img src=\"" + img_location + exam_manager.now_exam_prefix + "/" + json.img[cnt] + "\" /><br />";
         }
     }
-    //こっから昔書いたHSPコード丸パクリ
+    //選択肢&回答欄生成
+    let select_box = document.getElementById("select_box"); //HTML5の規格ではid要素はデフォルトでグローバル変数になってるらしいが、ブラウザで差異があるのでローカル変数で再定義する
+    select_box.innerHTML = "";
     Math.round();
-    for (let qlen = json.select.length, rndc = new Array(qlen), cnt = 0; qlen > cnt;) { //4つ以上対応可みたいな作りだが実際4固定 TODO:選択肢伸縮
+    for (let qlen = json.select.length, rndc = new Array(qlen), cnt = 0; qlen > cnt;) {
         let rnum = Math.floor(Math.random() * qlen);
         if (rndc[rnum] === true) continue;
         if (rnum == 0) exam_manager.correct = cnt;
         rndc[rnum] = true;
         cnt++;
+        select_box.innerHTML += "<label><input name=\"answer\" type=\"radio\" value=\"" + cnt + "\" accesskey=\"" + cnt + "\" />" + cnt + "</label>";
         text_box.innerHTML += cnt + ":" + json.select[rnum] + "<br />";
     }
 }
@@ -329,9 +334,24 @@ function resetLog() {
 
 // TODO: 再実装
 function fetchAllJson() {
-    /*全てのJSONにfetchかければService Workerがキャッシュしてくれるだろうという乱暴な考え*/
-    let links = document.links;
-    for (let len = links.length, cnt = 0; cnt < len; cnt++) {
-        if (links[cnt].id !== undefined) fetch("json/" + links[cnt].id + ".json");
+    /*全てのJSONや画像ににfetchかければService Workerがキャッシュしてくれるだろうという乱暴な考え*/
+    try {
+        if (navigator.serviceWorker.controller.state != "activated") throw (null);
+    } catch (e) {
+        alert("このブラウザではこの機能は使用できません。");
+        return;
+    }
+    if (!confirm("この処理は大量のネットワーク通信を行う可能性が有ります。その場合サーバに負担をかける可能性が有ります。続行しますか。")) return;
+    let links = document.getElementById("exam_list").getElementsByTagName("a");
+    for (let cnt = links.length - 1; cnt >= 0; cnt--) {
+        fetch(json_location + links[cnt].dataset.prefix + "/" + links[cnt].dataset.no + ".json").then(response => {
+            response.json().then(json => {
+                for (let json_cnt = json.length - 1; json_cnt >= 0; json_cnt--) {
+                    if (Array.isArray(json[json_cnt].img)) {
+                        for (let img_cnt = json[json_cnt].img.length - 1; img_cnt >= 0; img_cnt--) fetch(img_location + links[cnt].dataset.prefix + "/" + json[json_cnt].img[img_cnt]);
+                    }
+                }
+            });
+        });
     }
 }
