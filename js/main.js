@@ -231,7 +231,9 @@ function showQuestion() {
             text_box.innerHTML += "<img src=\"config/img/" + exam_manager.now_exam_prefix + "/" + json.img[cnt] + "\" /><br />";
         }
     }
-    //こっから昔書いたHSPコード丸パクリ
+    //選択肢&回答欄生成
+    let select_box = document.getElementById("select_box");//HTML5の規格ではid要素はデフォルトでグローバル変数になってるらしいが、ブラウザで差異があるのでローカル変数で再定義する
+    select_box.innerHTML = "";
     Math.round();
     for (let qlen = json.select.length, rndc = new Array(qlen), cnt = 0; qlen > cnt;) { //4つ以上対応可みたいな作りだが実際4固定 TODO:選択肢伸縮
         let rnum = Math.floor(Math.random() * qlen);
@@ -239,6 +241,7 @@ function showQuestion() {
         if (rnum == 0) exam_manager.correct = cnt;
         rndc[rnum] = true;
         cnt++;
+        select_box.innerHTML += "<label><input name=\"answer\" type=\"radio\" value=\""+ cnt + "\" accesskey=\"" + cnt + "\" />"+ cnt + "</label>";
         text_box.innerHTML += cnt + ":" + json.select[rnum] + "<br />";
     }
 }
