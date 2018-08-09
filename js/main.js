@@ -46,7 +46,7 @@ class ExaminationManager {
         let cnt = 0;
         let len = this.config.list.length
         while (cnt < len && this.config.list[cnt].prefix != p) cnt++;
-        return (cnt == len) ? null : this.config.list[cnt];
+        return (cnt === len) ? null : this.config.list[cnt];
     }
 
     getExamConfig(index) {
@@ -240,7 +240,7 @@ function showQuestion() {
     for (let qlen = json.select.length, rndc = new Array(qlen), cnt = 0; qlen > cnt;) {
         let rnum = Math.floor(Math.random() * qlen);
         if (rndc[rnum] === true) continue;
-        if (rnum == 0) exam_manager.correct = cnt;
+        if (rnum === 0) exam_manager.correct = cnt;
         rndc[rnum] = true;
         cnt++;
         select_box.innerHTML += "<label><input name=\"answer\" type=\"radio\" value=\"" + cnt + "\" accesskey=\"" + cnt + "\" />" + cnt + "</label>";
@@ -261,7 +261,7 @@ function checkAnswer() {
 
     let mes = "";
     let mcolor = "";
-    if (selected == exam_manager.correct + 1) { /*無選択の場合対策*/
+    if (Number(selected) === exam_manager.correct + 1) { /*無選択の場合対策*/
         mes = "<p>正解です。</p>";
         color = "palegreen";
         exam_manager.addRecord(true);

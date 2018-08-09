@@ -25,7 +25,7 @@ class CacheSystem {
         caches.keys().then((cache_names) => {
             return Promise.all(
                 cache_names.map((cache_name) => {
-                    if (cache_name != this.NAME) return caches.delete(cache_name); /*古いからいらない*/
+                    if (cache_name !== this.NAME) return caches.delete(cache_name); /*古いからいらない*/
                 })
             );
         });
