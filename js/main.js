@@ -1,8 +1,5 @@
 /*License:See LICENSE.md*/
 
-/*そうだ IE、潰そう*/
-/*IEは忘れた。さあ書こう。*/
-
 class ExaminationManager {
   /*セッターゲッターはスネークケース、関数はキャメルケースという*/
   constructor() {
@@ -259,49 +256,49 @@ function checkAnswer() {
     }
   }
 
-  let mes = "";
-  let mcolor = "";
+  let message = "";
+  let message_color = "";
   if (Number(selected) === exam_manager.correct + 1) { /*無選択の場合対策*/
-    mes = "<p>正解です。</p>";
-    color = "palegreen";
+    message = "<p>正解です。</p>";
+    message_color = "palegreen";
     exam_manager.addRecord(true);
   } else {
-    mes = "<p>不正解です。正しい答えは" + (exam_manager.correct + 1) + "番です。</p>";
-    color = "hotpink";
+    message = "<p>不正解です。正しい答えは" + (exam_manager.correct + 1) + "番です。</p>";
+    message_color = "hotpink";
     exam_manager.addRecord(false);
   }
-  mes += "<input type=\"button\" value=\"次へ\" onclick=\"showQuestion()\" />";
+  message += "<input type=\"button\" value=\"次へ\" onclick=\"showQuestion()\" />";
   document.getElementById("answer_box").style.display = "none";
   exam_manager.saveStatus();
-  showMessage(mes, color);
+  showMessage(message, message_color);
 }
 
 function showResult() {
   document.getElementById("answer_box").style.display = "none";
   exam_manager.deleteSaveData()
   let result = exam_manager.record;
-  let mes = "<p><strong>結果発表</strong></p><p>正答数:<strong>" + result.good + "</strong></p><p>誤答数:<strong>" + result.bad + "</strong></p>";
-  let color = "";
+  let message = "<p><strong>結果発表</strong></p><p>正答数:<strong>" + result.good + "</strong></p><p>誤答数:<strong>" + result.bad + "</strong></p>";
+  let message_color = "";
   let current_config = exam_manager.getConfigByPrefix(exam_manager.now_exam_prefix);
   if (current_config !== null) {
     if (result.good >= current_config.passing_mark) {
-      mes += "<p><strong>合格</strong>です。おめでとうございます。🎉👏</p>";
-      color = "palegreen";
+      message += "<p><strong>合格</strong>です。おめでとうございます。🎉👏</p>";
+      message_color = "palegreen";
 
     } else {
-      mes += "<p><strong>不合格</strong>です。もうすこしがんばりましょう。💪</p>";
-      color = "hotpink";
+      message += "<p><strong>不合格</strong>です。もうすこしがんばりましょう。💪</p>";
+      message_color = "hotpink";
     }
 
   } else {
-    mes += "<p>合否判定ができませんでした。</p>";
-    color = "grey";
+    message += "<p>合否判定ができませんでした。</p>";
+    message_color = "grey";
   }
   if (log[exam_manager.now_exam_prefix] === undefined) log[exam_manager.now_exam_prefix] = {};
   log[exam_manager.now_exam_prefix][exam_manager.now_exam_no] = result;
   localStorage.log = JSON.stringify(log);
-  mes += "<input type=\"button\" value=\"終了\" onclick=\"endExam()\" />";
-  showMessage(mes, color);
+  message += "<input type=\"button\" value=\"終了\" onclick=\"endExam()\" />";
+  showMessage(message, message_color);
 }
 
 function endExam() {
@@ -312,10 +309,10 @@ function endExam() {
 }
 
 /*メッセージ表示系統*/
-function showMessage(text, color) {
+function showMessage(text, message_color) {
   let dom = document.getElementById("message_box");
   if (text) dom.innerHTML = text;
-  if (color) dom.style.backgroundColor = color;
+  if (message_color) dom.style.backgroundColor = message_color;
   dom.style.maxHeight = (dom.scrollHeight ? dom.scrollHeight : 100) + "px"; /*表示されないと先行けないので救済措置*/
 }
 
