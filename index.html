@@ -2,55 +2,56 @@
 <html lang="ja">
 <!--License:See LICENSE.md-->
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width" />
-    <meta name="theme-color" content="darkgreen" />
-    <!--For Android Chrome-->
-    <link rel="icon" href="config/img/icon-32x32.png" />
-    <link rel="apple-touch-icon" href="config/img/icon-192x192.png" />
-    <link rel="manifest" href="config/json/manifest.json" />
-    <link rel="stylesheet" href="css/light.css" type="text/css" />
-    <title>MN2 Core</title>
-    <script src="js/main.js"></script>
-    <script>
-        document.addEventListener("DOMContentLoaded", init);
-    </script>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width" />
+  <meta name="theme-color" content="darkgreen" />
+  <!--For Android Chrome-->
+  <link rel="icon" href="config/img/icon-32x32.png" />
+  <link rel="apple-touch-icon" href="config/img/icon-192x192.png" />
+  <link rel="manifest" href="config/json/manifest.json" />
+  <link rel="stylesheet" href="css/light.css" type="text/css" />
+  <title>MN2 Core</title>
+  <script src="js/main.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", init);
+  </script>
 </head>
 <body>
-    <main>
-        <div id="main">
-            <div id="menu">
-                <div class="Paragraph">
-                    <div class="Title">
-                        <h1 id="system_title">Loading...</h1>
-                    </div>
-                    <p id="system_description">Loading...</p>
-                    <noscript>JavaScriptを有効化して再読込をしてください。</noscript>
-                </div>
-                <div id="exam_list"></div>
-                <div class="Paragraph">
-                    <div class="Title">
-                        <h1>設定</h1>
-                    </div>
-                    <input type="button" onclick="resetLog()" value="全実施結果削除" /><br />
-                    <input type="button" onclick="fetchAllJson()" value="オフラインで使用できるようにする" /><br />
-                </div>
-            </div>
-            <div class="Paragraph" style="display:none;" id="exam">
-                <div class="Title">
-                    <h1 id="question_title">第1問</h1>
-                </div>
-                <p id="question_text">Loading...</p>
-                <div id="answer_box">
-                    <div id="select_box">
-                    </div>
-                    <input name="answer" type="submit" value="回答" onclick="return checkAnswer();" />
-                </div>
-                <div id="message_box" style="transition:max-height 0.5s ease;max-height:0px;overflow:hidden;">
-                </div>
-            </div>
+  <main>
+    <div id="main">
+      <div id="menu">
+        <div class="Paragraph">
+          <div class="Title">
+            <h1 id="system_title">Loading...</h1>
+          </div>
+          <p id="system_description">Loading...</p>
+          <noscript>JavaScriptを有効化して再読込をしてください。</noscript>
         </div>
-    </main>
-</body>
+        <div id="exam_list"></div>
+        <div class="Paragraph">
+          <div class="Title">
+            <h1>設定</h1>
+          </div>
+          <input type="button" onclick="resetLog()" value="全実施結果削除" /><br />
+          <input type="button" onclick="fetchAllJson()" value="オフラインで使用できるようにする" /><br />
 
+        </div>
+      </div>
+      <div class="Paragraph" style="display:none;" id="exam">
+        <div class="Title">
+          <h1 id="question_title">第1問</h1>
+        </div>
+        <p id="question_text">Loading...</p>
+        <div id="answer_box">
+          <div id="select_box">
+          </div>
+          <input name="answer" type="submit" value="回答" onclick="return checkAnswer();" />
+
+        </div>
+        <div id="message_box" style="transition:max-height 0.5s ease;max-height:0px;overflow:hidden;">
+        </div>
+      </div>
+    </div>
+  </main>
+</body>
 </html>
