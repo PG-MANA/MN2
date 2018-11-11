@@ -32,8 +32,8 @@
           <div class="Title">
             <h1>設定</h1>
           </div>
-          <input type="button" onclick="resetLog()" value="全実施結果削除" style="margin-bottom: 2rem;" /><br />
-          <input type="button" onclick="fetchAllJson()" value="オフラインで使用できるようにする" style="margin-bottom: 2rem;" /><br />
+          <input type="button" value="全実施結果削除" style="margin-bottom: 2rem;" id="reset_button"/><br />
+          <input type="button" value="オフラインで使用できるようにする" style="margin-bottom: 2rem;" id="exam_fetching_button"/><br />
         </div>
       </div>
       <div class="Paragraph" style="display:none;" id="exam">
@@ -44,8 +44,7 @@
         <div id="answer_box">
           <div id="select_box">
           </div>
-          <input name="answer" type="submit" value="回答" onclick="return checkAnswer();" />
-
+          <input name="answer" type="submit" value="回答" id="answer_submitting_button" />
         </div>
         <div id="message_box" style="transition:max-height 0.5s ease;max-height:0px;overflow:hidden;">
         </div>

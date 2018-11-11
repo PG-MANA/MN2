@@ -1,38 +1,50 @@
 /*License:See LICENSE.md*/
 body {
-    background-color: white;
-    font-family: 'Noto Sans JP', 'IPAGothic', 'Yu Gothic', 'Meiryo', sans-serif;
-    margin: 0;
-    text-align: center;
+  background-color: white;
+  font-family: 'Noto Sans JP', 'IPAGothic', 'Yu Gothic', 'Meiryo', sans-serif;
+  margin: 0;
+  text-align: center;
 }
 
 /*本体*/
-
 #main {
-    /*display: none; 作ってる間だけ*/
-    font-size: large;
+  /*display: none; 作ってる間だけ*/
+  font-size: large;
 }
 
 .Title {
-    /*タイトル(H1,H2タグあたり)*/
-    color: black;
-    margin-bottom: 32px;
+  /*タイトル(H1,H2タグあたり)*/
+  color: black;
+  margin-bottom: 32px;
 }
 
 .Title h1, .Title h2, .Title h3 {
-    padding-top: 2px;
-    font-weight: 900;
-    font-size: 4rem;
-    margin-top: 5px;
-    margin-bottom: 0;
+  padding-top: 2px;
+  font-weight: 900;
+  font-size: 4rem;
+  margin-top: 5px;
+  margin-bottom: 0;
 }
 
 .Title p {
-    margin-top: 0;
+  margin-top: 0;
 }
 
 .Paragraph {
-    background-color: white;
-    /*border-top: thin solid black;*/
-    margin-bottom: 100px;
+  background-color: white;
+  /*border-top: thin solid black;*/
+  margin-bottom: 100px;
+}
+
+.select_exam_list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.select_exam_list li {
+  margin: 30px;
+}
+
+#select_box>label {
+  margin: 3vw;
 }
