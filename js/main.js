@@ -112,7 +112,12 @@ const json_location = "config/json/";
 const img_location = "config/img/";
 
 /*初期化*/
+document.addEventListener("DOMContentLoaded", init); //ATTENTION: 即時実行される
+
 function init() {
+  document.getElementById("answer_submitting_button").onclick = checkAnswer;//For CSP
+  document.getElementById("reset_button").onclick = resetLog;
+  document.getElementById("exam_fetching_button").onclick = fetchAllJson;
   log = localStorage.log !== undefined ? JSON.parse(localStorage.log) : {};
   fetch(json_location + "config.json").then(response => {
     response.json().then(json => {
@@ -181,10 +186,23 @@ function setExamList() {
     let exam_dom = document.createElement("div");
     exam_dom.className = "Paragraph";
     exam_dom.innerHTML = "<div class=\"Title\"><h1>" + config.name + "</h1></div>";
+    let list_dom = document.createElement("ul");
+    list_dom.className = "select_exam_list";
     for (let cnt = 1; cnt <= config.num; cnt++) {
-      exam_dom.innerHTML += "<p><a data-prefix=\"" + config.prefix + "\" data-no=\"" + cnt + "\" href=\"?p=" + config.prefix + "&n=" + cnt + "\" onclick=\"return prepareExam(this);\">" + config.name + "-" + cnt + "</a>" + (log[config.prefix] !== undefined && log[config.prefix][cnt] !== undefined ? (":正解数:" +
-        log[config.prefix][cnt].good + (log[config.prefix][cnt].good >= config.passing_mark ? "(合格)" : "(不合格)")) : "") + "</p>";
+      let exam_entry_dom = document.createElement("li");
+      let exam_entry_link_dom = document.createElement("a");
+      exam_entry_link_dom.dataset.prefix = config.prefix;
+      exam_entry_link_dom.dataset.no = cnt;
+      exam_entry_link_dom.setAttribute("href", "?p=" + config.prefix + "&n=" + cnt);
+      exam_entry_link_dom.innerHTML = config.name + "-" + cnt;
+      exam_entry_link_dom.onclick = t => prepareExam(t.target);
+      let exam_entry_text_dom = document.createTextNode(log[config.prefix] !== undefined && log[config.prefix][cnt] !== undefined ? (":正解数:" +
+      log[config.prefix][cnt].good + (log[config.prefix][cnt].good >= config.passing_mark ? "(合格)" : "(不合格)")) : "");
+      exam_entry_dom.appendChild(exam_entry_link_dom);
+      exam_entry_dom.appendChild(exam_entry_text_dom);
+      list_dom.appendChild(exam_entry_dom);
     }
+    exam_dom.appendChild(list_dom);
     dom.appendChild(exam_dom);
   }
 }
@@ -267,10 +285,13 @@ function checkAnswer() {
     message_color = "hotpink";
     exam_manager.addRecord(false);
   }
-  message += "<input type=\"button\" value=\"次へ\" onclick=\"showQuestion()\" />";
+  let next_button = document.createElement("input");
+  next_button.setAttribute("type", "button");
+  next_button.setAttribute("value", "次へ");
+  next_button.onclick = showQuestion;
   document.getElementById("answer_box").style.display = "none";
   exam_manager.saveStatus();
-  showMessage(message, message_color);
+  showMessage(message, message_color, [next_button]);
 }
 
 function showResult() {
@@ -297,8 +318,11 @@ function showResult() {
   if (log[exam_manager.now_exam_prefix] === undefined) log[exam_manager.now_exam_prefix] = {};
   log[exam_manager.now_exam_prefix][exam_manager.now_exam_no] = result;
   localStorage.log = JSON.stringify(log);
-  message += "<input type=\"button\" value=\"終了\" onclick=\"endExam()\" />";
-  showMessage(message, message_color);
+  let finish_button = document.createElement("input");
+  finish_button.setAttribute("type", "button");
+  finish_button.setAttribute("value", "終了");
+  finish_button.onclick = endExam;
+  showMessage(message, message_color, [finish_button]);
 }
 
 function endExam() {
@@ -309,16 +333,19 @@ function endExam() {
 }
 
 /*メッセージ表示系統*/
-function showMessage(text, message_color) {
+function showMessage(text, message_color, buttons/*Array*/) {
   let dom = document.getElementById("message_box");
   if (text) dom.innerHTML = text;
   if (message_color) dom.style.backgroundColor = message_color;
+  for(let cnt = 0; cnt < buttons.length; cnt++) { //参照回数が少ないはずなのでlengthを代入してない
+    dom.appendChild(buttons[cnt]);
+  }
   dom.style.maxHeight = (dom.scrollHeight ? dom.scrollHeight : 100) + "px"; /*表示されないと先行けないので救済措置*/
 }
 
 function closeMessage(bool_show_answer_box) {
   document.getElementById("message_box").style.maxHeight = "0px";
-  if (bool_show_answer_box) setTimeout("document.getElementById(\"answer_box\").style.display = \"\"",
+  if (bool_show_answer_box) setTimeout(() => document.getElementById("answer_box").style.display = "",
     document.getElementById("message_box").style.transitionDuration.slice(0, -1) * 1000);
 }
 

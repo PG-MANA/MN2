@@ -36,6 +36,15 @@ body {
   margin-bottom: 100px;
 }
 
+.select_exam_list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.select_exam_list li {
+  margin: 30px;
+}
+
 #select_box>label {
   margin: 3vw;
 }
