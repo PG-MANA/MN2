@@ -58,6 +58,7 @@ self.addEventListener("install", (event) => {
 
 self.addEventListener("activate", (event) => {
   event.waitUntil(cache_system.refresh());
+  event.waitUntil(self.clients.claim());
 });
 
 self.addEventListener("fetch", (event) => {
