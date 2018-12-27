@@ -30,7 +30,7 @@ class CacheSystem {
       );
     });
   }
-  fetch(event) {
+  get(event) {
     if (!this.disable_cache) {
       event.respondWith(caches.open(this.NAME).then((cache) => {
         return cache.match(event.request).then((response) => {
@@ -61,5 +61,5 @@ self.addEventListener("activate", (event) => {
 });
 
 self.addEventListener("fetch", (event) => {
-  event.waitUntil(cache_system.fetch(event));
+  event.waitUntil(cache_system.get(event));
 })
